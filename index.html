@@ -831,8 +831,8 @@
             ctx.fillText(`성공! ${elapsedTime}초`, canvas.width / 2, canvas.height / 2 - 20); // 화면 중앙에 메시지 출력
         
             // Calculate and store elapsed time
-            var endTime = Date.now();
-            elapsedTime = ((endTime - startTime) / 1000).toFixed(2);
+            const endTime = Date.now();  // 현재 시간을 기록
+            const elapsedTime = ((endTime - startTime.getTime()) / 1000).toFixed(2);  // 경과 시간 계산
             localStorage.setItem("elapsedTime", elapsedTime);
         
             // 새로운 기록을 저장
@@ -882,7 +882,8 @@
 
         function drawElapsedTime() {
             if (gameStarted) {
-                elapsedTime = ((Date.now() - startTime) / 1000).toFixed(2);
+                const endTime = Date.now();  // 현재 시간을 기록
+                const elapsedTime = ((endTime - startTime.getTime()) / 1000).toFixed(2);  // 경과 시간 계산
                 ctx.fillStyle = "white";
                 ctx.font = "24px Arial";
                 ctx.textAlign = "center";
@@ -1034,7 +1035,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                startTime = data.startTime; // 서버에서 받은 시작 시간을 저장
+                startTime = new Date(data.startTime);  // 서버에서 받은 startTime을 Date 객체로 변환                
                 console.log('Game start time recorded:', startTime);
         
                 // 게임 시작 로직 실행
