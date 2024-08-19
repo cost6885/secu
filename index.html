@@ -564,6 +564,15 @@
         });
 
 
+        window.onload = function() {
+            const params = getQueryParams();
+            // runInit 파라미터가 true일 때 initgame 함수 실행
+            if (params.runInit === 'true') {
+                prapare();
+            }
+        };        
+
+        
 
         function startItemFall(brickX, brickY) {
             itemFalling = true;
@@ -1424,7 +1433,15 @@
           alertBackground.style.display = 'block';
         }
 
-
+    function getQueryParams() {
+        const params = {};
+        window.location.search.replace(/^\?/, '').split('&').forEach(param => {
+            const [key, value] = param.split('=');
+            params[key] = decodeURIComponent(value);
+        });
+        return params;
+    }
+        
 
         
     </script>
