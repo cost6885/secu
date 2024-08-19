@@ -969,7 +969,7 @@
         
             // 참여 횟수를 구글 스프레드시트로 발송
             sendParticipationCount();
-                
+            
             document.getElementById("fallingItem").style.display = "none";
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
@@ -980,20 +980,37 @@
             document.getElementById('characterSelection').style.display = 'none';
             document.getElementById('difficultySelection').style.display = 'none';
             document.getElementById('rankmore').style.display = 'none';
-
+        
             var company = document.getElementById("company").value;
             var employeeId = document.getElementById("employeeId").value;
             var name = document.getElementById("name").value;
             localStorage.setItem("company", company);
             localStorage.setItem("employeeId", employeeId);
             localStorage.setItem("name", name);
-
+        
             itemCaught = false; // 특수 모드 초기화
             
-            initGame();
-            gameStarted = true;
-            startTime = Date.now();
-            draw();
+            // 서버에 게임 시작 시간 요청
+            fetch('http://18.189.195.93:5000/start_game', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                startTime = data.startTime; // 서버에서 받은 시작 시간을 저장
+                console.log('Game start time recorded:', startTime);
+        
+                // 게임 시작 로직 실행
+                initGame();
+                gameStarted = true;
+                draw();
+            })
+            .catch(error => {
+                console.error('Error starting game:', error);
+                alert('게임을 시작할 수 없습니다. 서버와의 연결에 문제가 있습니다.');
+            });
         }
 
 
@@ -1079,7 +1096,6 @@
                 return; // 함수 종료
             }
         
-            var elapsedTime = localStorage.getItem("elapsedTime");
             var participationTime = new Date().toLocaleString(); // 참여 시간 생성
         
             // 기존에 선택된 난이도(difficulty)를 가져옴
@@ -1089,8 +1105,7 @@
                 company: company,
                 employeeId: employeeId,
                 name: name,
-                elapsedTime: elapsedTime,
-                participationTime: participationTime, // 참여 시간 추가
+                startTime: startTime, // 서버에서 받은 시작 시간을 전송
                 difficulty: selectedDifficulty // 선택된 난이도를 데이터에 추가
             };
         
@@ -1101,7 +1116,7 @@
             var rankingBoard = document.getElementById("rankingBoard");
             rankingBoard.style.position = "absolute"; // 위치 설정을 위해 position 속성 추가
             rankingBoard.style.top = "30%"; // 랭킹 보드를 화면에서 30% 위치로 이동       
-        
+            
             // Google Sheets로 데이터 전송
             fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
                 method: 'POST',
@@ -1125,8 +1140,8 @@
                 alert('이벤트 응모 중 오류가 발생했습니다.');
             });
         
-            // AWS EC2 서버로 데이터 전송
-            fetch('http://18.189.195.93:5000/submit', {
+            // 게임 종료 후 AWS EC2 서버로 데이터 전송
+            fetch('http://18.189.195.93:5000/end_game', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -1174,6 +1189,7 @@
 
 
 
+
         function getLocalRankings() {
             var rankings = JSON.parse(localStorage.getItem('rankings')) || [];
             return rankings;
@@ -1194,8 +1210,9 @@
             // 로딩 화면을 표시
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";           
-            
-            fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
+        
+            // Flask 서버에서 랭킹 데이터를 가져오기
+            fetch('http://18.189.195.93:5000/get_data', {
                 mode: 'cors'
             })
             .then(response => {
@@ -1215,7 +1232,7 @@
                 data.result.forEach((entry, index) => {
                     var entryElement = document.createElement("div");
                     entryElement.className = "rank";
-                    var rankText = `${entry.name} (${entry.employeeId}) - ${entry.elapsedTime.toFixed(2)}초 ${entry.difficulty || 'N/A'}`;
+                    var rankText = `${entry.name} (${entry.employeeId}) - ${entry.elapsedTime}초 ${entry.difficulty || 'N/A'}`;
                     
                     if (index === 0) {
                         entryElement.innerHTML = `<span class="name" style="font-weight:bold; color: gold;">1등🥇 ${rankText}</span>`;
@@ -1292,7 +1309,8 @@
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";
             
-            fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
+            // Flask 서버에서 전체 랭킹 데이터를 가져오기
+            fetch('http://18.189.195.93:5000/get_data', {
                 mode: 'cors'
             })
             .then(response => {
@@ -1310,7 +1328,7 @@
                 data.entire.forEach((entry, index) => {
                     var entryElement = popup.document.createElement("div");
                     entryElement.className = "rank";
-                    entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name} (${entry.employeeId})</span><span class="time">${entry.elapsedTime.toFixed(2)}초 ${entry.difficulty}</span>`;
+                    entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name} (${entry.employeeId})</span><span class="time">${entry.elapsedTime}초 ${entry.difficulty}</span>`;
                     rankingBoard.appendChild(entryElement);
                 });
             })
