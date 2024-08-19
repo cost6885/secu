@@ -339,6 +339,41 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 텍스트에 그림자를 추가하여 입체감을 줍니다 */            
             transition: all 0.3s ease; /* 부드러운 애니메이션 */
         }
+
+          /* 경고창 배경 */
+          #custom-alert-background {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+          }
+        
+          /* 경고창 내용 */
+          #custom-alert-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+          }
+        
+          #custom-alert-box button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+          }
         
                 
     </style>
@@ -1009,7 +1044,7 @@
             })
             .catch(error => {
                 console.error('Error starting game:', error);
-                alert('게임을 시작할 수 없습니다. 서버와의 연결에 문제가 있습니다.');
+                showCustomAlert('게임을 시작할 수 없습니다. 서버와의 연결에 문제가 있습니다.');
             });
         }
 
@@ -1092,7 +1127,7 @@
             
             // 입력 필드가 비어있는지 확인
             if (company === "" || employeeId === "" || name === "") {
-                alert("모든 정보를 입력해 주세요."); // 경고 메시지 표시
+                showCustomAlert("모든 정보를 입력해 주세요."); // 경고 메시지 표시
                 return; // 함수 종료
             }
         
@@ -1129,15 +1164,15 @@
             .then(response => {
                 if (response.ok) {
                     console.log('Google Sheets 전송 성공:', response);
-                    alert('이벤트 응모가 완료되었습니다.');
+                    showCustomAlert('이벤트 응모가 완료되었습니다.');
                 } else {
                     console.error('Google Sheets 전송 에러:', response);
-                    alert('이벤트 응모 중 오류가 발생했습니다.');
+                    showCustomAlert('이벤트 응모 중 오류가 발생했습니다.');
                 }
             })
             .catch((error) => {
                 console.error('Google Sheets 전송 에러:', error);
-                alert('이벤트 응모 중 오류가 발생했습니다.');
+                showCustomAlert('이벤트 응모 중 오류가 발생했습니다.');
             });
         
             // 게임 종료 후 AWS EC2 서버로 데이터 전송
@@ -1356,7 +1391,33 @@
             messageElement.style.display = 'block';
         }
         
+        function showCustomAlert(message) {
+          const alertBackground = document.createElement('div');
+          alertBackground.id = 'custom-alert-background';
+        
+          const alertBox = document.createElement('div');
+          alertBox.id = 'custom-alert-box';
+        
+          const alertMessage = document.createElement('p');
+          alertMessage.textContent = message;
+        
+          const closeButton = document.createElement('button');
+          closeButton.textContent = '확인';
+          closeButton.onclick = function() {
+            document.body.removeChild(alertBackground);
+          };
+        
+          alertBox.appendChild(alertMessage);
+          alertBox.appendChild(closeButton);
+          alertBackground.appendChild(alertBox);
+          document.body.appendChild(alertBackground);
+        
+          alertBackground.style.display = 'block';
+        }
 
+
+
+        
     </script>
 </body>
 </html>
