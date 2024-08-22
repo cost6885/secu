@@ -847,7 +847,10 @@
             // 새로운 기록을 저장
             var name = localStorage.getItem("name") || "Unknown";
             var newEntry = { name: name, elapsedTime: parseFloat(elapsedTime) };
-            saveLocalRanking(newEntry);        
+            saveLocalRanking(newEntry);
+        
+            // Save endTime in localStorage to be used when sending data to the server
+            localStorage.setItem("endTime", new Date(endTime).toISOString());
         
             // Display event application form and button
             document.getElementById("formContainer").style.display = "block";
@@ -1145,12 +1148,9 @@
                 return; // 함수 종료
             }
         
-            var endTime = Date.now(); // 현재 시간을 기록
+            var endTime = new Date(localStorage.getItem("endTime"));  // 경과 시간 계산
             var elapsedTime = ((endTime - startTime.getTime()) / 1000).toFixed(2);  // 경과 시간 계산
             var participationTime = new Date(endTime).toLocaleString(); // 참여 시간 생성
-        
-            // 기존에 선택된 난이도(difficulty)를 가져옴
-            var selectedDifficulty = difficulty; // 이미 전역변수로 설정된 난이도 값을 사용
         
             var data = {
                 company: company,
@@ -1159,16 +1159,12 @@
                 elapsedTime: elapsedTime,  // 소요 시간 추가
                 participationTime: participationTime,  // 응답 시간 추가
                 startTime: startTime, // 서버에서 받은 시작 시간을 전송
-                difficulty: selectedDifficulty // 선택된 난이도를 데이터에 추가
+                endTime: endTime.toISOString(),  // end_time을 ISO 8601 형식으로 전송
+                difficulty: difficulty // 선택된 난이도를 데이터에 추가
             };
         
             // 로딩 스크린 표시
-            showLoadingScreen();            
-        
-            // 랭킹 보드의 위치를 위로 올리기
-            var rankingBoard = document.getElementById("rankingBoard");
-            rankingBoard.style.position = "absolute"; // 위치 설정을 위해 position 속성 추가
-            rankingBoard.style.top = "30%"; // 랭킹 보드를 화면에서 30% 위치로 이동       
+            showLoadingScreen();
         
             // Google Sheets로 데이터 전송
             fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
@@ -1234,10 +1230,11 @@
                 setTimeout(() => {
                     hideLoadingScreen();
                     showMessage(true);
-                    displayLocalRankingBoard();                    
+                    displayLocalRankingBoard();
                 }, 4000); // 4000 밀리초 = 4초
             });
         }
+
 
 
 
