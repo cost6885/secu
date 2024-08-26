@@ -918,7 +918,7 @@
         
             // Calculate and store elapsed time
             const endTime = Date.now();  // 현재 시간을 기록
-            elapsedTime = ((endTime - startTime.getTime()) / 1000).toFixed(2);  // 경과 시간 계산
+            elapsedTime = ((endTime - startTime) / 1000).toFixed(2);  // 경과 시간 계산
             localStorage.setItem("elapsedTime", elapsedTime);
         
             // 새로운 기록을 저장
@@ -940,6 +940,7 @@
             successMessageShown = true;
             console.log("Success message drawn.");
         }
+
 
 
 
