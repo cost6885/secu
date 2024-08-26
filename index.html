@@ -970,13 +970,14 @@
         function drawElapsedTime() {
             if (gameStarted) {
                 const endTime = Date.now();  // 현재 시간을 기록
-                elapsedTime = ((endTime - startTime.getTime()) / 1000).toFixed(2);  // 경과 시간 계산
+                elapsedTime = ((endTime - startTime) / 1000).toFixed(2);  // 경과 시간 계산
                 ctx.fillStyle = "white";
                 ctx.font = "24px Arial";
                 ctx.textAlign = "center";
                 ctx.fillText(`경과시간: ${elapsedTime}초`, canvas.width / 2, canvas.height * 2 / 3);
             }
         }
+
 
 
 
