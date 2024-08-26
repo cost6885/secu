@@ -375,7 +375,20 @@
             cursor: pointer;
           }
         
-                
+
+        #characterDescription {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 200px;
+            z-index: 1000;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
     </style>
 </head>
 <body>
@@ -457,6 +470,10 @@
         </div>
     </div>
 
+
+    <div id="characterDescription" style="display: none; position: absolute; background-color: rgba(0, 0, 0, 0.7); color: white; padding: 10px; border-radius: 5px; max-width: 200px; z-index: 1000;"></div>
+
+    
     <div id="buttonContainer">
         <div id="startMessage" onclick="prapare()">다시하기🔄</div>
         <div id="exit" onclick="closeWindow()">나가기🚪</div>
@@ -528,6 +545,14 @@
             };
 
 
+            // 캐릭터 설명 추가
+            const characterDescriptions = {
+                racoon1: "피곤하구리 : 아이템 드랍 확률 증가👆",
+                racoon2: "별구리 : 게임시작 시 랜덤으로 블록 제거",
+                racoon5: "라쿤 : 라쿤은 아직도 성장중...",
+                racoon6: "다시마 : 보조 다시마 추가 영입"
+            };
+        
             // Add this part to define gameSettings
             const gameSettings = {
                 itemFallMultiplier: 1.0,
@@ -596,6 +621,27 @@
         }
 
 
+        // 캐릭터 이미지에 이벤트 리스너 추가
+        document.getElementById('racoon1').addEventListener('mouseover', function(event) {
+            showCharacterDescription(event, characterDescriptions.racoon1);
+        });
+        document.getElementById('racoon1').addEventListener('mouseout', hideCharacterDescription);
+        
+        document.getElementById('racoon2').addEventListener('mouseover', function(event) {
+            showCharacterDescription(event, characterDescriptions.racoon2);
+        });
+        document.getElementById('racoon2').addEventListener('mouseout', hideCharacterDescription);
+        
+        document.getElementById('racoon5').addEventListener('mouseover', function(event) {
+            showCharacterDescription(event, characterDescriptions.racoon5);
+        });
+        document.getElementById('racoon5').addEventListener('mouseout', hideCharacterDescription);
+        
+        document.getElementById('racoon6').addEventListener('mouseover', function(event) {
+            showCharacterDescription(event, characterDescriptions.racoon6);
+        });
+        document.getElementById('racoon6').addEventListener('mouseout', hideCharacterDescription);
+        
 
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -643,6 +689,20 @@
             };
         });
 
+
+
+        function showCharacterDescription(event, description) {
+            const descriptionBox = document.getElementById('characterDescription');
+            descriptionBox.innerHTML = description;
+            descriptionBox.style.display = 'block';
+            descriptionBox.style.left = event.pageX + 'px';
+            descriptionBox.style.top = event.pageY + 'px';
+        }
+        
+        function hideCharacterDescription() {
+            const descriptionBox = document.getElementById('characterDescription');
+            descriptionBox.style.display = 'none';
+        }
         
 
         function startItemFall(brickX, brickY) {
@@ -1109,7 +1169,9 @@
 
 
         function startGame() {
-
+            // 캔버스를 초기화하여 이전 게임의 진행 화면을 지움
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
             showLoadingScreen();
             // 참여 횟수를 로컬 스토리지에서 가져옴
             let participationCount = localStorage.getItem('participationCount');
