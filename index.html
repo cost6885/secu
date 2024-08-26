@@ -441,10 +441,10 @@
     <div id="gameContainer">    
         <div id="characterSelection">
             <h3>캐릭터를 선택하세요</h3>
-            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif')">
-            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif')">
-            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif')">
-            <img src="https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif" class="character-option" onclick="selectCharacter('https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif')">
+            <img id="racoon1" src="https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif" class="character-option" onclick="selectCharacter('racoon1')">
+            <img id="racoon2" src="https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif" class="character-option" onclick="selectCharacter('racoon2')">
+            <img id="racoon5" src="https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif" class="character-option" onclick="selectCharacter('racoon5')">
+            <img id="racoon6" src="https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif" class="character-option" onclick="selectCharacter('racoon6')">
         </div>
     
         <div id="difficultySelection">
@@ -492,31 +492,111 @@
 
     <script>
 
-        var defaultCharacter = 'https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif';
+            const characters = {
+                racoon1: {
+                    imageSrc: "https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif",
+                    itemFallMultiplier: 5.0,
+                    initialMissingBricks: 0,
+                    ballSizeIncrease: 0,
+                    paddleWidthIncrease: 0,
+                    paddleImageSrc: "https://github.com/cost6885/tbon2/raw/main/image/dasima.png" // 기본 패들 이미지
+                },
+                racoon2: {
+                    imageSrc: "https://github.com/cost6885/tbon2/raw/main/image/racoon2.gif",
+                    itemFallMultiplier: 1.0,
+                    initialMissingBricks: [1, 5],
+                    ballSizeIncrease: 0,
+                    paddleWidthIncrease: 0,
+                    paddleImageSrc: "https://github.com/cost6885/tbon2/raw/main/image/dasima.png" // 기본 패들 이미지
+                },
+                racoon5: {
+                    imageSrc: "https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif",
+                    itemFallMultiplier: 1.0,
+                    initialMissingBricks: 0,
+                    ballSizeIncrease: 2,
+                    paddleWidthIncrease: 0,
+                    paddleImageSrc: "https://github.com/cost6885/tbon2/raw/main/image/dasima.png" // 기본 패들 이미지
+                },
+                racoon6: {
+                    imageSrc: "https://github.com/cost6885/tbon2/raw/main/image/racoon6.gif",
+                    itemFallMultiplier: 1.0,
+                    initialMissingBricks: 0,
+                    ballSizeIncrease: 0,
+                    paddleWidthIncrease: 33,
+                    paddleImageSrc: "https://github.com/cost6885/tbon2/raw/main/image/dasima2.png" // 특수 패들 이미지
+                }
+            };
 
-        var totalItems;        
 
-        var item, itemX, itemY, itemFalling = false, itemCaught = false, itemStock = false;
+            // Add this part to define gameSettings
+            const gameSettings = {
+                itemFallMultiplier: 1.0,
+                initialMissingBricks: 0,
+                ballSizeIncrease: 0,
+                paddleWidthIncrease: 0
+            };
 
-        var itemHeight = 108; // 아이템 높이 정의
-        var itemWidth = 100; // 아이템 너비 정의
-        var fallingItem = document.getElementById('fallingItem'); // 떨어지는 아이템 이미지
-        var fallingItemData = null; // 떨어지는 아이템 데이터 초기화        
         
-        var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
-        var rightPressed = false, leftPressed = false;
-        var brickRowCount = 2, brickColumnCount = 6, brickWidth = 100, brickHeight = 108, brickPadding = 0, brickOffsetTop = 20, brickOffsetLeft = 20;
-        var bricks = [], score = 0, gameStarted = false, startTime, elapsedTime;
-        var brickImage, image, canvasImage;
-        var enlargedBallRadius = ballRadius * 5;
-        var ballImage = new Image();
-        var characterSelected = false;
-        var difficultySelected = false;
-        var difficulty = 'easy';
-        var audio = document.getElementById('bgm');
-        var isDragging = false;
-        var gamecount = 0
-        ballImage.src = defaultCharacter;
+            var defaultCharacter = 'https://github.com/cost6885/tbon2/raw/main/image/racoon1.gif';
+        
+            var totalItems;        
+        
+            var item, itemX, itemY, itemFalling = false, itemCaught = false, itemStock = false;
+        
+            var itemHeight = 108; // 아이템 높이 정의
+            var itemWidth = 100; // 아이템 너비 정의
+            var fallingItem = document.getElementById('fallingItem'); // 떨어지는 아이템 이미지
+            var fallingItemData = null; // 떨어지는 아이템 데이터 초기화        
+        
+            var canvas, ctx, ballRadius = 10, x, y, dx = 6, dy = -6, paddleHeight = 47, paddleWidth = 133, paddleX;
+            var rightPressed = false, leftPressed = false;
+            var brickRowCount = 2, brickColumnCount = 6, brickWidth = 100, brickHeight = 108, brickPadding = 0, brickOffsetTop = 20, brickOffsetLeft = 20;
+            var bricks = [], score = 0, gameStarted = false, startTime, elapsedTime;
+            var brickImage, image, canvasImage;
+            var enlargedBallRadius = ballRadius * 5;
+            var characterSelected = false;
+            var difficultySelected = false;
+            var difficulty = 'easy';
+            var audio = document.getElementById('bgm');
+            var isDragging = false;
+            var gamecount = 0;
+        
+            // Initialize ball and paddle images
+            var ballImage = new Image();
+            ballImage.src = defaultCharacter;
+        
+            var paddleImage = new Image();    
+            paddleImage.src = "https://github.com/cost6885/tbon2/raw/main/image/dasima.png";
+        
+        function selectCharacter(characterId) {
+            const selectedCharacter = characters[characterId];
+        
+            // Set ball image based on selected character
+            ballImage.src = selectedCharacter.imageSrc;
+        
+            // Set paddle image based on selected character
+            paddleImage.src = selectedCharacter.paddleImageSrc;
+        
+            // Character selection state update
+            characterSelected = true;
+            document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
+            event.target.classList.add('selected');
+        
+            // Set game settings based on selected character
+            gameSettings.itemFallMultiplier = selectedCharacter.itemFallMultiplier;
+            gameSettings.initialMissingBricks = selectedCharacter.initialMissingBricks;
+            gameSettings.ballSizeIncrease = selectedCharacter.ballSizeIncrease;
+            gameSettings.paddleWidthIncrease = selectedCharacter.paddleWidthIncrease;
+        
+            // Wait for the paddle image to load before starting the game
+            paddleImage.onload = () => {
+                // Check start condition
+                checkStartCondition();
+            };
+        }
+
+
+
 
         document.addEventListener("DOMContentLoaded", function() {
 
@@ -562,15 +642,6 @@
                 // Ball image 로드 후 작업이 필요한 경우 여기에 작성
             };
         });
-
-
-        window.onload = function() {
-            const params = getQueryParams();
-            // runInit 파라미터가 true일 때 initgame 함수 실행
-            if (params.runInit === 'true') {
-                prapare();
-            }
-        };        
 
         
 
@@ -656,6 +727,7 @@
         }            
                 
         function prapare() {
+            // 화면 요소들의 초기화
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
             document.getElementById("message").style.display = "none";
@@ -664,48 +736,51 @@
             document.getElementById("prepare").style.display = "none";
             document.getElementById("exit").style.display = "none";
             document.getElementById("characterSelection").style.display = "block";
-            document.getElementById("difficultySelection").style.display = "block";            
+            document.getElementById("difficultySelection").style.display = "block";
             document.getElementById("fallingItem").style.display = "none";
-            
+        
             // 선택 상태 초기화
             characterSelected = false;
             difficultySelected = false;
-
+        
             // 캐릭터와 난이도에 선택된 테두리 제거
             document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
             document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('selected'));
-            
         
-            // gameContainer를 아래로 내리기 위한 코드 추가
+            // 게임 기본 설정으로 리셋
+            ballRadius = 10; // 공 크기 초기화
+            enlargedBallRadius = ballRadius * 5; // enlargedBallRadius 초기화
+            dx = 6; // 공 속도 초기화
+            dy = -6;
+            paddleWidth = 133; // 패들 너비 초기화
+            paddleImage.src = "https://github.com/cost6885/tbon2/raw/main/image/dasima.png"; // 기본 패들 이미지로 초기화
+            ballImage.src = defaultCharacter; // 기본 캐릭터 이미지로 초기화
+        
+            // gameSettings 리셋 (다시 하기 시 제대로 초기화되도록)
+            gameSettings.itemFallMultiplier = 1.0; // 기본값으로 초기화
+            gameSettings.initialMissingBricks = 0;
+            gameSettings.ballSizeIncrease = 0; // 공 크기 증가 초기화
+            gameSettings.paddleWidthIncrease = 0;
+        
+            // 게임 컨테이너를 아래로 내리기 위한 코드
             var gameContainer = document.getElementById("gameContainer");
-            gameContainer.style.position = "relative"; // position 속성 설정
-            gameContainer.style.top = "300px"; // 아래로 300px 이동
+            gameContainer.style.position = "relative"; 
+            gameContainer.style.top = "300px"; 
         
             // 랭킹 보드의 위치를 위로 올리기
             var rankingBoard = document.getElementById("rankingBoard");
-            rankingBoard.style.position = "absolute"; // 위치 설정을 위해 position 속성 추가
-            rankingBoard.style.top = "30%"; // 랭킹 보드를 화면에서 30% 위치로 이동       
-        
+            rankingBoard.style.position = "absolute"; 
+            rankingBoard.style.top = "30%"; 
+            
             // 랭킹 보드가 이미 표시되어 있는지 확인
             if (rankingBoard.style.display !== "block") {
-                // 랭킹 보드를 표시하는 함수 호출
                 displayLocalRankingBoard();                
-                rankingBoard.style.display = "block"; // 랭킹 보드를 항상 표시
-            }           
-                        
+                rankingBoard.style.display = "block";
+            }       
+        
             checkStartCondition();
         }
 
-
-
-
-        function selectCharacter(src) {
-            ballImage.src = src;
-            characterSelected = true;
-            document.querySelectorAll('.character-option').forEach(el => el.classList.remove('selected'));
-            event.target.classList.add('selected');
-            checkStartCondition();
-        }
 
 
         function selectDifficulty(level) {
@@ -773,6 +848,8 @@
             totalItems = Math.floor(Math.random() * 5) + 1; // 총 아이템 수 1~5 사이로 설정
             fallingItemData = null; // 아이템 데이터 초기화            
             console.log("Game initialized.");
+            
+            console.log('gameSettings.itemFallMultiplier');         
         }
 
 
@@ -872,10 +949,6 @@
         }
 
 
-        var paddleImage = new Image();    
-        paddleImage.src = "https://github.com/cost6885/tbon2/raw/main/image/dasima.png";
-
-
         function drawPaddle() {
             ctx.drawImage(paddleImage, paddleX, canvas.height - paddleHeight - 10, paddleWidth, paddleHeight);
         }
@@ -908,12 +981,26 @@
 
 
         function collisionDetection() {
+            // 초기 블럭 제거
+            if (gameSettings.initialMissingBricks && bricks.length > 0) {
+                let bricksToRemove = Math.floor(Math.random() * (gameSettings.initialMissingBricks[1] - gameSettings.initialMissingBricks[0] + 1)) + gameSettings.initialMissingBricks[0];
+                while (bricksToRemove > 0) {
+                    let randomColumn = Math.floor(Math.random() * brickColumnCount);
+                    let randomRow = Math.floor(Math.random() * brickRowCount);
+                    if (bricks[randomColumn][randomRow].status === 1) {
+                        bricks[randomColumn][randomRow].status = 0;
+                        bricksToRemove--;
+                        score++; // 블럭 제거 시 점수 증가
+                    }
+                }
+                gameSettings.initialMissingBricks = 0; // 초기 제거 작업은 한 번만 실행
+            }
+        
             for (var c = 0; c < brickColumnCount; c++) {
                 for (var r = 0; r < brickRowCount; r++) {
                     var b = bricks[c][r];
                     if (b.status == 1) {
                         if (x + dx > b.x && x + dx < b.x + brickWidth && y + dy > b.y && y + dy < b.y + brickHeight) {
-                            // 아이템을 획득한 경우 벽돌을 뚫고 지나감
                             if (!itemCaught) { 
                                 var hitFromLeft = x + enlargedBallRadius > b.x && x - enlargedBallRadius < b.x;
                                 var hitFromRight = x + enlargedBallRadius > b.x + brickWidth && x - enlargedBallRadius < b.x + brickWidth;
@@ -930,20 +1017,34 @@
                             
                             b.status = 0;
                             score++;
+                            
+                            // Check if all bricks are cleared
                             if (score == brickRowCount * brickColumnCount) {
                                 gameStarted = false;
                                 drawSuccessMessage();
+                                return; // 모든 벽돌이 제거되었으므로 함수 종료
                             }
-
+        
                             // 아이템이 낙하 중이 아니고, itemStock이 false일 때만 새로운 아이템 생성
                             if (!itemFalling && !itemStock) {
-                                if (Math.random() < 0.1) {  // 아이템 낙하를 시작할 확률 (예: 10%)
+                                let dropChance = 0.1 * gameSettings.itemFallMultiplier;
+                                if (Math.random() < dropChance) {
                                     startItemFall(b.x, b.y);
                                 }
+                            }
+        
+                            // 공 크기 증가 (racoon5 특수 능력)
+                            if (gameSettings.ballSizeIncrease) {
+                                enlargedBallRadius += gameSettings.ballSizeIncrease;
                             }
                         }
                     }
                 }
+            }
+        
+            // 패들 크기 조정 (racoon6 특수 능력)
+            if (gameSettings.paddleWidthIncrease && paddleWidth === 133) {
+                paddleWidth += gameSettings.paddleWidthIncrease;
             }
         
             if (y + dy > canvas.height - paddleHeight - enlargedBallRadius) {
@@ -967,7 +1068,6 @@
                 } else if (y + dy > canvas.height - enlargedBallRadius) {
                     gameStarted = false;
                     gameOver();
-                    successMessageShown = true;
                     return;
                 }
             }
@@ -1054,10 +1154,21 @@
                 startTime = new Date(data.startTime);  // 서버에서 받은 startTime을 Date 객체로 변환                
                 console.log('Game start time recorded:', startTime);
         
-                // 게임 시작 로직 실행
+               if (paddleImage.complete) {
+                // 이미지가 이미 로드된 상태라면 즉시 게임 시작
                 initGame();
                 gameStarted = true;
+                startTime = Date.now();
                 draw();
+            } else {
+                // 이미지가 아직 로드되지 않았다면 onload 이벤트 설정
+                paddleImage.onload = function() {
+                    initGame();
+                    gameStarted = true;
+                    startTime = Date.now();
+                    draw();
+                };
+    }
             })
             .catch(error => {
                 console.error('Error starting game:', error);
