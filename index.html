@@ -429,7 +429,7 @@
         </div>
     </div>
 
-        <div id="loadingScreen2">
+    <div id="loadingScreen2">
         <div>
             <img src="https://github.com/cost6885/tbon2/raw/main/image/loading3.webp" alt="Loading...">
             <p>랭킹을 가져오는 중...</p>
@@ -513,7 +513,7 @@
                     imageSrc: "https://github.com/cost6885/tbon2/raw/main/image/racoon5.gif",
                     itemFallMultiplier: 1.0,
                     initialMissingBricks: 0,
-                    ballSizeIncrease: 2,
+                    ballSizeIncrease: 3,
                     paddleWidthIncrease: 0,
                     paddleImageSrc: "https://github.com/cost6885/tbon2/raw/main/image/dasima.png" // 기본 패들 이미지
                 },
@@ -1110,8 +1110,7 @@
 
         function startGame() {
 
-            // 캔버스를 초기화하여 이전 게임의 진행 화면을 지움
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            showLoadingScreen();
             // 참여 횟수를 로컬 스토리지에서 가져옴
             let participationCount = localStorage.getItem('participationCount');
             
@@ -1161,17 +1160,21 @@
                 console.log('Game start time recorded:', startTime);
         
                if (paddleImage.complete) {
-                // 이미지가 이미 로드된 상태라면 즉시 게임 시작
-                initGame();
-                gameStarted = true;
-                startTime = Date.now();
-                draw();
-            } else {
-                // 이미지가 아직 로드되지 않았다면 onload 이벤트 설정
-                paddleImage.onload = function() {
+                    // 이미지가 이미 로드된 상태라면 즉시 게임 시작
+                    
                     initGame();
                     gameStarted = true;
                     startTime = Date.now();
+                    hideLoadingScreen();
+                    draw();
+            } else {
+                // 이미지가 아직 로드되지 않았다면 onload 이벤트 설정
+                paddleImage.onload = function() {
+                    
+                    initGame();
+                    gameStarted = true;
+                    startTime = Date.now();
+                    hideLoadingScreen();
                     draw();
                 };
     }
