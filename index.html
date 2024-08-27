@@ -1325,18 +1325,24 @@
             var company = document.getElementById("company").value.trim();
             var employeeId = document.getElementById("employeeId").value.trim();
             var name = document.getElementById("name").value.trim();
-            
+        
             // 입력 필드가 비어있는지 확인
             if (company === "" || employeeId === "" || name === "") {
                 showCustomAlert("모든 정보를 입력해 주세요."); // 경고 메시지 표시
                 return; // 함수 종료
             }
-            
-            // 이름에 숫자가 포함되어 있는지 확인
-            const nameHasNumber = /\d/; // 숫자를 포함하는지 확인하는 정규 표현식
-            
-            if (nameHasNumber.test(name)) {
-                showCustomAlert("이름에는 숫자를 포함할 수 없습니다."); // 경고 메시지 표시
+        
+            // 사번에 영문과 숫자만 포함되는지 확인
+            const employeeIdPattern = /^[a-zA-Z0-9]+$/;
+            if (!employeeIdPattern.test(employeeId)) {
+                showCustomAlert("사번에는 영문과 숫자만 포함될 수 있습니다."); // 경고 메시지 표시
+                return; // 함수 종료
+            }
+        
+            // 이름에 한글만 포함되는지 확인
+            const namePattern = /^[가-힣]+$/;
+            if (!namePattern.test(name)) {
+                showCustomAlert("이름에는 한글만 사용할 수 있습니다."); // 경고 메시지 표시
                 return; // 함수 종료
             }
         
@@ -1433,6 +1439,7 @@
 
 
 
+
         function getLocalRankings() {
             var rankings = JSON.parse(localStorage.getItem('rankings')) || [];
             return rankings;
@@ -1450,11 +1457,9 @@
 
         
         function displayLocalRankingBoard() {
-            // 로딩 화면을 표시
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";           
         
-            // Flask 서버에서 랭킹 데이터를 가져오기
             fetch('http://18.189.195.93:5000/get_data', {
                 mode: 'cors'
             })
@@ -1465,13 +1470,11 @@
                 return response.json();
             })
             .then(data => {
-                console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
-        
+                console.log(data);
                 var rankingBoard = document.getElementById("rankingBoard");
                 rankingBoard.style.display = "block";
                 rankingBoard.innerHTML = "<h2>🏆게임 랭킹🏆</h2>";
-                
-                // 'result' 데이터를 처리하여 상위 10개 랭킹을 표시합니다.
+        
                 data.result.forEach((entry, index) => {
                     var entryElement = document.createElement("div");
                     entryElement.className = "rank";
@@ -1489,28 +1492,44 @@
         
                     rankingBoard.appendChild(entryElement);
                 });
-        
-                console.log("전체 최고 기록:", data.entire);
-            })
-            .finally(() => {
-                // 로딩 화면을 숨김
-                loadingScreen2.style.display = "none";
-                document.getElementById("rankmore").style.display = "block";
             })
             .catch(error => {
-                console.error('Error fetching data:', error);
-                // 로딩 화면을 숨김 (오류 발생 시에도)
+                console.error('Error fetching data from server:', error);
+        
+                // 서버 연결에 실패했을 때 Google Apps Script에서 데이터 가져오기
+                fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
+                    method: 'GET',
+                    mode: 'cors'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var rankingBoard = document.getElementById("rankingBoard");
+                    rankingBoard.style.display = "block";
+                    rankingBoard.innerHTML = "<h2>🏆게임 랭킹 (대체 데이터)🏆</h2>";
+        
+                    data.result.forEach((entry, index) => {
+                        var entryElement = document.createElement("div");
+                        entryElement.className = "rank";
+                        entryElement.innerHTML = `${index + 1}등 ${entry.name} - ${entry.elapsedTime}초`;
+        
+                        rankingBoard.appendChild(entryElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data from Google Apps Script:', error);
+                });
+            })
+            .finally(() => {
                 loadingScreen2.style.display = "none";
+                document.getElementById("rankmore").style.display = "block";
             });
         }
 
 
 
         function rankmore() {
-            // 팝업 창 열기
             var popup = window.open("", "RankPopup", "width=600,height=800");
         
-            // 팝업 창에 HTML 구조 추가
             popup.document.write(`
                 <html>
                 <head>
@@ -1520,7 +1539,7 @@
                             font-family: 'Nanum Gothic', 'Malgun Gothic', sans-serif;
                             background-color: #f9f9f9;
                             text-align: center;
-                            overflow-y: auto; /* 스크롤바가 필요할 경우 생성 */
+                            overflow-y: auto;
                         }
                         #rankingBoard {
                             margin: 20px auto;
@@ -1548,11 +1567,9 @@
                 </html>
             `);
         
-            // 로딩 화면을 표시
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";
             
-            // Flask 서버에서 전체 랭킹 데이터를 가져오기
             fetch('http://18.189.195.93:5000/get_data', {
                 mode: 'cors'
             })
@@ -1563,28 +1580,45 @@
                 return response.json();
             })
             .then(data => {
-                console.log(data); // 받아온 데이터를 콘솔에 출력하여 확인합니다.
-        
                 var rankingBoard = popup.document.getElementById("rankingBoard");
-        
-                // 'entire' 데이터를 처리하여 전체 랭킹을 표시합니다.
                 data.entire.forEach((entry, index) => {
                     var entryElement = popup.document.createElement("div");
                     entryElement.className = "rank";
-                    entryElement.innerHTML = `<span class="name">${index + 1}등 ${entry.name} (${entry.employeeId})</span><span class="time">${entry.elapsedTime}초 ${entry.difficulty}</span>`;
+                    entryElement.innerHTML = `${index + 1}등 ${entry.name} (${entry.employeeId}) - ${entry.elapsedTime}초 ${entry.difficulty}`;
+        
                     rankingBoard.appendChild(entryElement);
                 });
             })
-            .finally(() => {
-                // 로딩 화면을 숨김
-                loadingScreen2.style.display = "none";
-            })
             .catch(error => {
-                console.error('Error fetching data:', error);
-                // 로딩 화면을 숨김 (오류 발생 시에도)
+                console.error('Error fetching data from server:', error);
+        
+                // 서버 연결에 실패했을 때 Google Apps Script에서 데이터 가져오기
+                fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
+                    method: 'GET',
+                    mode: 'cors'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    var rankingBoard = popup.document.getElementById("rankingBoard");
+                    rankingBoard.innerHTML = "<h2>🏆전체 랭킹 (대체 데이터)🏆</h2>";
+        
+                    data.result.forEach((entry, index) => {
+                        var entryElement = popup.document.createElement("div");
+                        entryElement.className = "rank";
+                        entryElement.innerHTML = `${index + 1}등 ${entry.name} - ${entry.elapsedTime}초`;
+        
+                        rankingBoard.appendChild(entryElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data from Google Apps Script:', error);
+                });
+            })
+            .finally(() => {
                 loadingScreen2.style.display = "none";
             });
         }
+
 
 
         function showMessage(success = false) {
