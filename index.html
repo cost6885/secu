@@ -1331,6 +1331,14 @@
                 showCustomAlert("모든 정보를 입력해 주세요."); // 경고 메시지 표시
                 return; // 함수 종료
             }
+            
+            // 이름에 숫자가 포함되어 있는지 확인
+            const nameHasNumber = /\d/; // 숫자를 포함하는지 확인하는 정규 표현식
+            
+            if (nameHasNumber.test(name)) {
+                showCustomAlert("이름에는 숫자를 포함할 수 없습니다."); // 경고 메시지 표시
+                return; // 함수 종료
+            }
         
             var endTime = new Date(localStorage.getItem("endTime"));  // 경과 시간 계산
             var elapsedTime = ((endTime - startTime) / 1000).toFixed(2);  // 경과 시간 계산
