@@ -668,33 +668,6 @@
         });
 
         
-        setInterval(function() {
-            if (paddleWidth > 170 || Math.abs(dx) > 55) {
-                alert("비정상적인 동작이 감지되었습니다. 게임이 종료됩니다.");
-                window.location.reload();
-            }
-        }, 1000);
-        
-        
-        (function() {
-            const devtools = /./;
-            devtools.toString = function() {
-                this.opened = true;
-                window.location.href = 'about:blank';
-            };
-        
-            console.log('%c', devtools);
-        })();
-
-        window.onkeydown = function(e) {
-            if (e.keyCode == 123) {
-                return false;
-            }
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
-                return false;
-            }
-        };
-
         
         document.addEventListener("DOMContentLoaded", function() {
 
