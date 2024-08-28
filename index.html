@@ -642,31 +642,6 @@
         });
         document.getElementById('racoon6').addEventListener('mouseout', hideCharacterDescription);
 
-
-        // F12(개발자 도구) 비활성화
-        document.addEventListener("keydown", function (e) {
-            if (e.keyCode == 123) { // F12
-                e.preventDefault();
-                return false;
-            }
-        });
-        
-        // 우클릭 비활성화
-        document.addEventListener("contextmenu", function (e) {
-            e.preventDefault();
-        });
-        
-        // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U 비활성화
-        document.addEventListener("keydown", function (e) {
-            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) {
-                e.preventDefault();
-                return false;
-            } else if (e.ctrlKey && e.keyCode == 85) {
-                e.preventDefault();
-                return false;
-            }
-        });
-
         
         
         document.addEventListener("DOMContentLoaded", function() {
