@@ -641,9 +641,61 @@
             showCharacterDescription(event, characterDescriptions.racoon6);
         });
         document.getElementById('racoon6').addEventListener('mouseout', hideCharacterDescription);
+
+
+        // F12(개발자 도구) 비활성화
+        document.addEventListener("keydown", function (e) {
+            if (e.keyCode == 123) { // F12
+                e.preventDefault();
+                return false;
+            }
+        });
         
+        // 우클릭 비활성화
+        document.addEventListener("contextmenu", function (e) {
+            e.preventDefault();
+        });
+        
+        // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U 비활성화
+        document.addEventListener("keydown", function (e) {
+            if (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) {
+                e.preventDefault();
+                return false;
+            } else if (e.ctrlKey && e.keyCode == 85) {
+                e.preventDefault();
+                return false;
+            }
+        });
 
+        
+        setInterval(function() {
+            if (paddleWidth > 170 || Math.abs(dx) > 55) {
+                alert("비정상적인 동작이 감지되었습니다. 게임이 종료됩니다.");
+                window.location.reload();
+            }
+        }, 1000);
+        
+        
+        (function() {
+            const devtools = /./;
+            devtools.toString = function() {
+                this.opened = true;
+                window.location.href = 'about:blank';
+            };
+        
+            console.log('%c', devtools);
+        })();
 
+        window.onkeydown = function(e) {
+            if (e.keyCode == 123) {
+                return false;
+            }
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+                return false;
+            }
+        };
+
+        
         document.addEventListener("DOMContentLoaded", function() {
 
             document.getElementById("loadingScreen2").style.display = "none";
