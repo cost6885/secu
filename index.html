@@ -1212,7 +1212,7 @@
             itemStock = false;
             
             // 서버에 게임 시작 시간 요청
-            fetch('http://18.189.195.93:5000/start_game', {
+            fetch('http://18.189.195.93:80/start_game', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -1388,7 +1388,7 @@
             });
         
             // 게임 종료 후 AWS EC2 서버로 데이터 전송
-            fetch('http://18.189.195.93:5000/end_game', {
+            fetch('http://18.189.195.93:80/end_game', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -1460,7 +1460,7 @@
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";           
         
-            fetch('http://18.189.195.93:5000/get_data', {
+            fetch('http://18.189.195.93:80/get_data', {
                 mode: 'cors'
             })
             .then(response => {
@@ -1582,7 +1582,7 @@
             var loadingScreen2 = document.getElementById("loadingScreen2");
             loadingScreen2.style.display = "flex";
             
-            fetch('http://18.189.195.93:5000/get_data', {
+            fetch('http://18.189.195.93:80/get_data', {
                 mode: 'cors'
             })
             .then(response => {
