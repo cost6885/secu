@@ -649,7 +649,7 @@
 
             // 최대 속도 및 패들 너비 설정
             const settings = Object.freeze({
-                MAX_SPEED: 76,
+                MAX_SPEED: 100,
                 MAX_PADDLE_WIDTH: 166
             });
 
@@ -931,6 +931,17 @@
             difficultySelected = true;
             document.querySelectorAll('.difficulty-option').forEach(el => el.classList.remove('selected'));
             event.target.classList.add('selected');
+            
+            // 도전 모드일 경우 속도를 30으로 설정
+            if (difficulty === '도전') {
+                dx = 30;
+                dy = -30;
+            } else {
+                // 도전 모드가 아니면 기본 속도로 설정 (기존 설정인 5)
+                dx = 6; // 초기 속도 6으로 변경
+                dy = -6;
+            }
+        
             checkStartCondition();
         }
 
@@ -966,8 +977,7 @@
             console.log("Initializing game...");
             x = canvas.width / 4; // 공의 초기 위치를 캔버스의 3분의 1 지점으로 설정
             y = canvas.height - paddleHeight - enlargedBallRadius; // 패들 위로 공의 초기 위치 설정
-            dx = 5;
-            dy = -5;
+            // dx와 dy는 난이도 선택 시 이미 설정됨
             paddleX = (canvas.width - paddleWidth) / 3; // 패들의 초기 위치를 캔버스의 3분의 1 지점으로 설정
         
             bricks = [];
@@ -994,7 +1004,6 @@
             
             console.log('gameSettings.itemFallMultiplier');         
         }
-
 
         function keyDownHandler(e) {
             if (e.key === "Right" || e.key === "ArrowRight") {
@@ -1204,7 +1213,7 @@
                     if (difficulty === '어려움') {
                         adjustSpeed(10, 19, 40);
                     } else if (difficulty === '도전') {
-                        adjustSpeed(40, 76, 160); // 최소 및 최대 속도를 어려움의 4배로 설정
+                        adjustSpeed(76, 76, 160); // 최소 및 최대 속도를 어려움의 4배로 설정
                     } else {
                         adjustSpeed(5, 7, 0); // 쉬움 난이도에서는 속도를 줄이고 각도 변경을 하지 않습니다.
                     }
