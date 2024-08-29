@@ -14,18 +14,18 @@
                 height: window.innerHeight
             };
     
-            // // 콘솔 접근 차단 및 키보드 단축키 막기
-            // var devtools = function() {};
-            // devtools.toString = function() {
-            //     console.error("콘솔 접근이 차단되었습니다!");
-            //     return "";
-            // };
-            // console.log("%c", devtools);
+            // 콘솔 접근 차단 및 키보드 단축키 막기
+            var devtools = function() {};
+            devtools.toString = function() {
+                console.error("콘솔 접근이 차단되었습니다!");
+                return "";
+            };
+            console.log("%c", devtools);
     
             window.onkeydown = function(e) {
                 // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+P 막기
                 if (
-                    e.key === "F11" ||
+                    e.key === "F12" ||
                     (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
                     (e.ctrlKey && (e.key === "U" || e.key === "S" || e.key === "P"))
                 ) {
