@@ -7,56 +7,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
 
     <script>
-        // (function() {
-        //     var detected = false;
-        //     var lastWindowSize = {
-        //         width: window.innerWidth,
-        //         height: window.innerHeight
-        //     };
+        (function() {
+            var detected = false;
+            var lastWindowSize = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
     
-        //     // 콘솔 접근 차단 및 키보드 단축키 막기
-        //     var devtools = function() {};
-        //     devtools.toString = function() {
-        //         console.error("콘솔 접근이 차단되었습니다!");
-        //         return "";
-        //     };
-        //     console.log("%c", devtools);
+            // 콘솔 접근 차단 및 키보드 단축키 막기
+            var devtools = function() {};
+            devtools.toString = function() {
+                console.error("콘솔 접근이 차단되었습니다!");
+                return "";
+            };
+            console.log("%c", devtools);
     
-        //     window.onkeydown = function(e) {
-        //         // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+P 막기
-        //         if (
-        //             e.key === "F12" ||
-        //             (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
-        //             (e.ctrlKey && (e.key === "U" || e.key === "S" || e.key === "P"))
-        //         ) {
-        //             e.preventDefault();
-        //         }
-        //     };
+            window.onkeydown = function(e) {
+                // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+P 막기
+                if (
+                    e.key === "F12" ||
+                    (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+                    (e.ctrlKey && (e.key === "U" || e.key === "S" || e.key === "P"))
+                ) {
+                    e.preventDefault();
+                }
+            };
     
-        //     // 우클릭 메뉴 차단
-        //     document.addEventListener("contextmenu", function(e) {
-        //         e.preventDefault();
-        //     });
+            // 우클릭 메뉴 차단
+            document.addEventListener("contextmenu", function(e) {
+                e.preventDefault();
+            });
     
-        //     // 개발자 도구 감지 및 창 크기 조정 대응
-        //     setInterval(function() {
-        //         // 개발자 도구가 열려있는지 감지
-        //         if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
-        //             if (!detected) {
-        //                 detected = true;
-        //                 alert("개발자 도구가 감지되었습니다. 게임이 종료됩니다.");
-        //                 window.location.href = "about:blank";
-        //             }
-        //         } else {
-        //             // 창 크기 변경 감지
-        //             if (lastWindowSize.width !== window.innerWidth || lastWindowSize.height !== window.innerHeight) {
-        //                 lastWindowSize.width = window.innerWidth;
-        //                 lastWindowSize.height = window.innerHeight;
-        //                 detected = false; // 창 크기 변경으로 인해 감지 상태 초기화
-        //             }
-        //         }
-        //     }, 1000);
-        // })();
+            // 개발자 도구 감지 및 창 크기 조정 대응
+            setInterval(function() {
+                // 개발자 도구가 열려있는지 감지
+                if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
+                    if (!detected) {
+                        detected = true;
+                        alert("개발자 도구가 감지되었습니다. 게임이 종료됩니다.");
+                        window.location.href = "about:blank";
+                    }
+                } else {
+                    // 창 크기 변경 감지
+                    if (lastWindowSize.width !== window.innerWidth || lastWindowSize.height !== window.innerHeight) {
+                        lastWindowSize.width = window.innerWidth;
+                        lastWindowSize.height = window.innerHeight;
+                        detected = false; // 창 크기 변경으로 인해 감지 상태 초기화
+                    }
+                }
+            }, 1000);
+        })();
     </script>
     
     <style>
@@ -683,22 +683,21 @@
         
         document.addEventListener("DOMContentLoaded", function() {
 
-            setInterval(function() {
+                setInterval(function() {
                 // 최대 속도 초과 감지
                 currentSpeed = Math.sqrt(dx * dx + dy * dy);
-                if (currentSpeed > settings.MAX_SPEED) {  // settings.MAX_SPEED로 접근
+                if (currentSpeed > MAX_SPEED) {
                     alert("속도 초과 감지: 게임이 중단됩니다.");
                     window.location.reload();
                 }
         
                 // 최대 패들 너비 초과 감지
-                if (paddleWidth > settings.MAX_PADDLE_WIDTH) {  // settings.MAX_PADDLE_WIDTH로 접근
+                if (paddleWidth > MAX_PADDLE_WIDTH) {
                     alert("패들 너비 초과 감지: 게임이 중단됩니다.");
                     window.location.reload();
                 }
         
             }, 5000);
-        
             
             document.getElementById("loadingScreen2").style.display = "none";
             
@@ -1074,9 +1073,14 @@
             elapsedTime = ((endTime - startTime) / 1000).toFixed(2);  // 경과 시간 계산
             localStorage.setItem("elapsedTime", elapsedTime);
         
+            // 새로운 기록을 저장
+            var name = localStorage.getItem("name") || "Unknown";
+            var newEntry = { name: name, elapsedTime: parseFloat(elapsedTime) };
+            saveLocalRanking(newEntry);
+        
             // Save endTime in localStorage to be used when sending data to the server
             localStorage.setItem("endTime", new Date(endTime).toISOString());
-
+        
             // Display event application form and button
             document.getElementById("formContainer").style.display = "block";
             document.getElementById("message").style.display = "block";
@@ -1087,37 +1091,10 @@
         
             successMessageShown = true;
             console.log("Success message drawn.");
-        
-            // 서버에 게임 종료 시간 데이터 전송 (회사, 사번, 이름 정보는 전송하지 않음)
-            sendEndGameData(elapsedTime, new Date(startTime).toISOString(), new Date(endTime).toISOString());
         }
-        
-        function sendEndGameData(elapsedTime, startTime, endTime) {
-            const data = {
-                elapsedTime: elapsedTime,
-                startTime: startTime,
-                endTime: endTime
-            };
-            
-            fetch('http://18.189.195.93:5000/record_time', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Game time data recorded successfully.');
-                } else {
-                    console.error('Error recording game time data:', response);
-                }
-            })
-            .catch((error) => {
-                console.error('Error recording game time data:', error);
-            });
-        }
-        
+
+
+
 
 
         function drawBall() {
@@ -1302,7 +1279,8 @@
         
             // 참여 횟수를 구글 스프레드시트로 발송
             sendParticipationCount();
-        
+
+            
             document.getElementById("fallingItem").style.display = "none";
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
@@ -1323,7 +1301,7 @@
         
             itemCaught = false; // 특수 모드 초기화
             itemStock = false;
-        
+            
             // 서버에 게임 시작 시간 요청
             fetch('/start_game', {
                 method: 'POST',
@@ -1332,37 +1310,36 @@
                     'Origin': 'http://18.189.195.93'
                 }
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to start game');
-                }
-                console.log('Game start time recorded on server.');
+            .then(response => response.json())
+            .then(data => {
+                startTime = new Date(data.startTime);  // 서버에서 받은 startTime을 Date 객체로 변환                
+                console.log('Game start time recorded:', startTime);
         
-                // 클라이언트 측에서 startTime을 설정
-                startTime = Date.now();
-        
-                if (paddleImage.complete) {
+               if (paddleImage.complete) {
                     // 이미지가 이미 로드된 상태라면 즉시 게임 시작
+                    
                     initGame();
                     gameStarted = true;
+                    startTime = Date.now();
                     hideLoadingScreen();
                     draw();
-                } else {
-                    // 이미지가 아직 로드되지 않았다면 onload 이벤트 설정
-                    paddleImage.onload = function() {
-                        initGame();
-                        gameStarted = true;
-                        hideLoadingScreen();
-                        draw();
-                    };
-                }
+            } else {
+                // 이미지가 아직 로드되지 않았다면 onload 이벤트 설정
+                paddleImage.onload = function() {
+                    
+                    initGame();
+                    gameStarted = true;
+                    startTime = Date.now();
+                    hideLoadingScreen();
+                    draw();
+                };
+    }
             })
             .catch(error => {
                 console.error('Error starting game:', error);
                 showCustomAlert('게임을 시작할 수 없습니다. 서버와의 연결에 문제가 있습니다.');
             });
         }
-
 
 
         function sendParticipationCount() {
@@ -1461,15 +1438,23 @@
                 return; // 함수 종료
             }
         
-            const endTime = localStorage.getItem("endTime");  // 경과 시간 계산
-            const elapsedTime = localStorage.getItem("elapsedTime");  // 로컬 스토리지에서 경과 시간 가져옴
+            var endTime = new Date(localStorage.getItem("endTime"));  // 경과 시간 계산
+            var elapsedTime = ((endTime - startTime) / 1000).toFixed(2);  // 경과 시간 계산
+            var participationTime = new Date(endTime).toLocaleString(); // 참여 시간 생성
         
-            const data = {
+            var data = {
                 company: company,
                 employeeId: employeeId,
                 name: name,
-                difficulty: difficulty, // 선택된 난이도를 데이터에 추가
+                elapsedTime: elapsedTime,  // 소요 시간 추가
+                participationTime: participationTime,  // 응답 시간 추가
+                startTime: new Date(startTime).toISOString(), // 서버로 전송할 때 ISO 8601 형식으로 변환
+                endTime: endTime.toISOString(),  // end_time을 ISO 8601 형식으로 전송
+                difficulty: difficulty // 선택된 난이도를 데이터에 추가
             };
+        
+            // 로딩 스크린 표시
+            showLoadingScreen();
         
             // Google Sheets로 데이터 전송
             fetch('https://script.google.com/macros/s/AKfycbzFJQwTMNssXrzPP-B85taN0uL3lJajYrXqf7mokzBLbPu88UmTgVzNN6YvFH2jY26Ctw/exec', {
@@ -1539,6 +1524,9 @@
                 }, 4000); // 4000 밀리초 = 4초
             });
         }
+
+
+
 
 
 
