@@ -1076,6 +1076,14 @@
         
             // Save endTime in localStorage to be used when sending data to the server
             localStorage.setItem("endTime", new Date(endTime).toISOString());
+
+            // Display event application form and button
+            document.getElementById("formContainer").style.display = "block";
+            document.getElementById("message").style.display = "block";
+            
+            var messageElement = document.getElementById("message");
+            messageElement.style.display = "block";
+            messageElement.innerText = `성공! ${elapsedTime}초`;
         
             successMessageShown = true;
             console.log("Success message drawn.");
