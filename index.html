@@ -647,12 +647,6 @@
             var paddleImage = new Image();    
             paddleImage.src = "https://github.com/cost6885/tbon2/raw/main/image/dasima.png";
 
-            // 최대 속도 및 패들 너비 설정
-            const settings = Object.freeze({
-                MAX_SPEED: 100,
-                MAX_PADDLE_WIDTH: 166
-            });
-
            
             // 현재 설정된 속도 및 패들 너비 추적
             var currentSpeed = Math.sqrt(dx * dx + dy * dy); // 현재 공의 속도 계산
@@ -683,21 +677,29 @@
         
         document.addEventListener("DOMContentLoaded", function() {
 
-                setInterval(function() {
+            const settings = Object.freeze({
+                MAX_SPEED: 100,
+                MAX_PADDLE_WIDTH: 166
+            });
+        
+            setInterval(function() {
+                // 현재 속도 계산
+                const currentSpeed = Math.sqrt(dx * dx + dy * dy);
+        
                 // 최대 속도 초과 감지
-                currentSpeed = Math.sqrt(dx * dx + dy * dy);
-                if (currentSpeed > MAX_SPEED) {
+                if (currentSpeed > settings.MAX_SPEED) {
                     alert("속도 초과 감지: 게임이 중단됩니다.");
                     window.location.reload();
                 }
         
                 // 최대 패들 너비 초과 감지
-                if (paddleWidth > MAX_PADDLE_WIDTH) {
+                if (paddleWidth > settings.MAX_PADDLE_WIDTH) {
                     alert("패들 너비 초과 감지: 게임이 중단됩니다.");
                     window.location.reload();
                 }
         
             }, 5000);
+                    
             
             document.getElementById("loadingScreen2").style.display = "none";
             
@@ -1083,7 +1085,7 @@
             };
         
             // 서버로 데이터 전송 (이전에 제공된 서버 주소 사용)
-            fetch('http://18.189.195.93/report_time', {
+            fetch('http://18.189.195.93:5000/report_time', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
