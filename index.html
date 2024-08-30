@@ -6,58 +6,58 @@
     <title>너구리를 가져와</title>
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@700&display=swap" rel="stylesheet">
 
-<!--     <script>
-        (function() {
-            var detected = false;
-            var lastWindowSize = {
-                width: window.innerWidth,
-                height: window.innerHeight
-            };
+    <script>
+        // (function() {
+        //     var detected = false;
+        //     var lastWindowSize = {
+        //         width: window.innerWidth,
+        //         height: window.innerHeight
+        //     };
     
-            // 콘솔 접근 차단 및 키보드 단축키 막기
-            var devtools = function() {};
-            devtools.toString = function() {
-                console.error("콘솔 접근이 차단되었습니다!");
-                return "";
-            };
-            console.log("%c", devtools);
+        //     // 콘솔 접근 차단 및 키보드 단축키 막기
+        //     var devtools = function() {};
+        //     devtools.toString = function() {
+        //         console.error("콘솔 접근이 차단되었습니다!");
+        //         return "";
+        //     };
+        //     console.log("%c", devtools);
     
-            window.onkeydown = function(e) {
-                // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+P 막기
-                if (
-                    e.key === "F12" ||
-                    (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
-                    (e.ctrlKey && (e.key === "U" || e.key === "S" || e.key === "P"))
-                ) {
-                    e.preventDefault();
-                }
-            };
+        //     window.onkeydown = function(e) {
+        //         // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S, Ctrl+P 막기
+        //         if (
+        //             e.key === "F12" ||
+        //             (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        //             (e.ctrlKey && (e.key === "U" || e.key === "S" || e.key === "P"))
+        //         ) {
+        //             e.preventDefault();
+        //         }
+        //     };
     
-            // 우클릭 메뉴 차단
-            document.addEventListener("contextmenu", function(e) {
-                e.preventDefault();
-            });
+        //     // 우클릭 메뉴 차단
+        //     document.addEventListener("contextmenu", function(e) {
+        //         e.preventDefault();
+        //     });
     
-            // 개발자 도구 감지 및 창 크기 조정 대응
-            setInterval(function() {
-                // 개발자 도구가 열려있는지 감지
-                if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
-                    if (!detected) {
-                        detected = true;
-                        alert("개발자 도구가 감지되었습니다. 게임이 종료됩니다.");
-                        window.location.href = "about:blank";
-                    }
-                } else {
-                    // 창 크기 변경 감지
-                    if (lastWindowSize.width !== window.innerWidth || lastWindowSize.height !== window.innerHeight) {
-                        lastWindowSize.width = window.innerWidth;
-                        lastWindowSize.height = window.innerHeight;
-                        detected = false; // 창 크기 변경으로 인해 감지 상태 초기화
-                    }
-                }
-            }, 1000);
-        })();
-    </script> -->
+        //     // 개발자 도구 감지 및 창 크기 조정 대응
+        //     setInterval(function() {
+        //         // 개발자 도구가 열려있는지 감지
+        //         if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
+        //             if (!detected) {
+        //                 detected = true;
+        //                 alert("개발자 도구가 감지되었습니다. 게임이 종료됩니다.");
+        //                 window.location.href = "about:blank";
+        //             }
+        //         } else {
+        //             // 창 크기 변경 감지
+        //             if (lastWindowSize.width !== window.innerWidth || lastWindowSize.height !== window.innerHeight) {
+        //                 lastWindowSize.width = window.innerWidth;
+        //                 lastWindowSize.height = window.innerHeight;
+        //                 detected = false; // 창 크기 변경으로 인해 감지 상태 초기화
+        //             }
+        //         }
+        //     }, 1000);
+        // })();
+    </script>
     
     <style>
         body {
