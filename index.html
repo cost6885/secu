@@ -683,21 +683,22 @@
         
         document.addEventListener("DOMContentLoaded", function() {
 
-                setInterval(function() {
+            setInterval(function() {
                 // 최대 속도 초과 감지
                 currentSpeed = Math.sqrt(dx * dx + dy * dy);
-                if (currentSpeed > MAX_SPEED) {
+                if (currentSpeed > settings.MAX_SPEED) {  // settings.MAX_SPEED로 접근
                     alert("속도 초과 감지: 게임이 중단됩니다.");
                     window.location.reload();
                 }
         
                 // 최대 패들 너비 초과 감지
-                if (paddleWidth > MAX_PADDLE_WIDTH) {
+                if (paddleWidth > settings.MAX_PADDLE_WIDTH) {  // settings.MAX_PADDLE_WIDTH로 접근
                     alert("패들 너비 초과 감지: 게임이 중단됩니다.");
                     window.location.reload();
                 }
         
             }, 5000);
+        });
             
             document.getElementById("loadingScreen2").style.display = "none";
             
