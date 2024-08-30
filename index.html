@@ -1068,30 +1068,52 @@
             ctx.textAlign = "center";
             ctx.fillText(`성공! ${elapsedTime}초`, canvas.width / 2, canvas.height / 2 - 20); // 화면 중앙에 메시지 출력
         
-            // Calculate and store elapsed time
+            // 경과 시간 계산 및 저장
             const endTime = Date.now();  // 현재 시간을 기록
             elapsedTime = ((endTime - startTime) / 1000).toFixed(2);  // 경과 시간 계산
             localStorage.setItem("elapsedTime", elapsedTime);
         
-            // 새로운 기록을 저장
-            var name = localStorage.getItem("name") || "Unknown";
-            var newEntry = { name: name, elapsedTime: parseFloat(elapsedTime) };
-            saveLocalRanking(newEntry);
-        
-            // Save endTime in localStorage to be used when sending data to the server
+            // 종료 시간을 ISO 형식으로 저장
             localStorage.setItem("endTime", new Date(endTime).toISOString());
         
-            // Display event application form and button
+            // 서버로 전송할 데이터 생성
+            const data = {
+                elapsedTime: elapsedTime,  // 계산된 경과 시간
+                endTime: new Date(endTime).toISOString()  // 종료 시간 (ISO 형식)
+            };
+        
+            // 서버로 데이터 전송 (이전에 제공된 서버 주소 사용)
+            fetch('http://18.189.195.93/report_time', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('서버 전송 성공:', response);
+                } else {
+                    console.error('서버 전송 에러:', response);
+                }
+            })
+            .catch((error) => {
+                console.error('서버 전송 에러:', error);
+            });
+        
+            // UI 업데이트: 성공 메시지와 이벤트 신청 양식 표시
             document.getElementById("formContainer").style.display = "block";
             document.getElementById("message").style.display = "block";
-            
+        
             var messageElement = document.getElementById("message");
             messageElement.style.display = "block";
             messageElement.innerText = `성공! ${elapsedTime}초`;
         
             successMessageShown = true;
+        
             console.log("Success message drawn.");
         }
+
 
 
 
