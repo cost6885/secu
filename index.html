@@ -1302,8 +1302,7 @@
         
             // 참여 횟수를 구글 스프레드시트로 발송
             sendParticipationCount();
-
-            
+        
             document.getElementById("fallingItem").style.display = "none";
             document.getElementById("gameDescription").style.display = 'none';
             document.getElementById("formContainer").style.display = "none";
@@ -1324,7 +1323,7 @@
         
             itemCaught = false; // 특수 모드 초기화
             itemStock = false;
-            
+        
             // 서버에 게임 시작 시간 요청
             fetch('/start_game', {
                 method: 'POST',
@@ -1333,36 +1332,37 @@
                     'Origin': 'http://18.189.195.93'
                 }
             })
-            .then(response => response.json())
-            .then(data => {
-                startTime = new Date(data.startTime);  // 서버에서 받은 startTime을 Date 객체로 변환                
-                console.log('Game start time recorded:', startTime);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to start game');
+                }
+                console.log('Game start time recorded on server.');
         
-               if (paddleImage.complete) {
+                // 클라이언트 측에서 startTime을 설정
+                startTime = Date.now();
+        
+                if (paddleImage.complete) {
                     // 이미지가 이미 로드된 상태라면 즉시 게임 시작
-                    
                     initGame();
                     gameStarted = true;
-                    startTime = Date.now();
                     hideLoadingScreen();
                     draw();
-            } else {
-                // 이미지가 아직 로드되지 않았다면 onload 이벤트 설정
-                paddleImage.onload = function() {
-                    
-                    initGame();
-                    gameStarted = true;
-                    startTime = Date.now();
-                    hideLoadingScreen();
-                    draw();
-                };
-    }
+                } else {
+                    // 이미지가 아직 로드되지 않았다면 onload 이벤트 설정
+                    paddleImage.onload = function() {
+                        initGame();
+                        gameStarted = true;
+                        hideLoadingScreen();
+                        draw();
+                    };
+                }
             })
             .catch(error => {
                 console.error('Error starting game:', error);
                 showCustomAlert('게임을 시작할 수 없습니다. 서버와의 연결에 문제가 있습니다.');
             });
         }
+
 
 
         function sendParticipationCount() {
